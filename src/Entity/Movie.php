@@ -29,6 +29,14 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imgSrc = null;
 
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Genre $genre = null;
+
+    #[ORM\ManyToOne(inversedBy: 'movies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Director $director = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +98,30 @@ class Movie
     public function setImgSrc(?string $imgSrc): static
     {
         $this->imgSrc = $imgSrc;
+
+        return $this;
+    }
+
+    public function getGenre(): ?Genre
+    {
+        return $this->genre;
+    }
+
+    public function setGenre(?Genre $genre): static
+    {
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    public function getDirector(): ?Director
+    {
+        return $this->director;
+    }
+
+    public function setDirector(?Director $director): static
+    {
+        $this->director = $director;
 
         return $this;
     }
