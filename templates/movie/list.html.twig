@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} - Liste des films
+{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1 class="text-5xl text-center font-bold mb-8">{{page_title}}</h1>
+    <div class="columns-5 gap-4">
+        {% for movie in movies %}
+            <div class="break-inside-avoid-column rounded-lg bg-slate-300 border-cyan-700 border-2 p-4 mb-4">
+                <h2 class="text-2xl font-bold mb-5">{{ movie.title }}</h2>
+                <p>{{ movie.genre.name }}
+                <br><b class="font-bold">{{movie.director.name}}</b>
+                <br>{{movie.releaseDate|date('Y')}}</p>
+                <p><a href="/movie/{{movie.id}}" class="inline-block py-1 px-4 rounded-full bg-cyan-700 text-white font-bold mt-2">En savoir + >>></a></p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
