@@ -58,7 +58,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < self::NBR_MOVIES; $i++) {
             $movie = new Movie();
             $movie
-                ->setTitle($faker->words($faker->numberBetween(1,9), true))
+                ->setTitle($faker->words($faker->numberBetween(1,4), true))
                 ->setReleaseDate($faker->dateTimeBetween('-100 years', 'now'))
                 ->setDuration($faker->numberBetween(80, 240))
                 ->setSynopsis($faker->realTextBetween(150, 600))
