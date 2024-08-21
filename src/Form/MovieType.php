@@ -37,7 +37,10 @@ class MovieType extends AbstractType
                 'class' => Genre::class,
                 'choice_label' => 'name',
             ])
-            ->add('director', TextType::class)
+            ->add('director', EntityType::class, [
+                'class' => Director::class,
+                'choice_label' => 'name',
+            ])
             ->add("Ajouter", SubmitType::class)
         ;
     }
