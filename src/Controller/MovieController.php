@@ -32,16 +32,4 @@ class MovieController extends AbstractController
         ]);
     }
 
-    // Technique de base qui ne gère pas les erreurs 404
-    // #[Route('/movie/{id}', name: "movie_item")]
-    // public function item(MovieRepository $movieRepository, int $id = 0): Response
-    // {
-    //     //$id = $request->query->getInt('id');
-    //     $movie = $movieRepository->find($id);
-
-    //     return $this->render('movie/item.html.twig', [
-    //         'active_menu' => 'movies_list',
-    //         'movie' => $movie
-    //     ]);
-    // }
 }

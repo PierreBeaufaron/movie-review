@@ -64,7 +64,7 @@ class IndexController extends AbstractController
         return $this->render('index/newsletter.html.twig', [
             'active_menu' => 'contact',
             'page_title' => 'Newsletter',
-            'newsletterForm' => $form
+            'newsletter_form' => $form->createView(),
         ]);
 
     }
