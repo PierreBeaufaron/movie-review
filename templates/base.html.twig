@@ -19,10 +19,14 @@
         </header>
         <main>
             <div class="container mx-auto">
+                {% include 'index/title.html.twig' %}
                 {% block body %}{% endblock %}
             </div>
         </main>
         <footer>
+
+            {% include 'index/footer.html.twig' %}
+
         </footer>
     </body>
 </html>

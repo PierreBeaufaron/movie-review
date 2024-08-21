@@ -5,8 +5,23 @@
 {% endblock %}
 
 {% block body %}
-
-<div>
-    <h1 class="text-5xl text-center font-bold">{{movie.title}}</h1>
-</div>
+    <div>
+        <div class="mb-10">
+            <img src="" alt="" class="h-96 rounded-t-xl bg-slate-300 object-cover">
+        </div>
+        <div class="flex flex-row">
+            <div class="basis-2/3 me-10">
+                <h5 class="text-2xl font-bold text-slate-500 border-b-slate-500 border-b pt-3 pb-3 mb-3">Synopsis</h5>
+                <p>
+                    {{movie.synopsis}}
+                </p>
+            </div>
+            <div class="basis-1/3 rounded-xl bg-blue-100 p-5">
+                <p class="border-b-black border-b pb-3 mb-3">De <strong class="font-bold">{{movie.director.name}}</strong></p>
+                <p class="">Genre : <strong class="font-semibold">{{movie.genre.name}}</strong></p>
+                <p class="">Date de sortie <strong class="font-semibold">{{movie.releaseDate|date('d-m-Y')}}</strong></p>
+                <p class="">Durée : <strong class="font-semibold">{{movie.duration}} minutes</strong></p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

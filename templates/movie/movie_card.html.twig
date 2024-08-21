@@ -1,7 +1,7 @@
 <div class="break-inside-avoid-column rounded-lg border-y-gray-300 border shadow-lg mb-4">
-    <img src="" alt="" class="h-40 rounded-t-lg bg-slate-300">
+    <img src="" alt="" class="h-40 rounded-t-lg bg-slate-300 object-cover">
     <div class="p-4 ">
-        <h2 class="text-2xl font-bold capitalize mb-5">{{ movie.title }}</h2>
+        <h2 class="text-2xl font-bold capitalize leading-7 mb-4">{{ movie.title }}</h2>
         <p>{{ movie.genre.name }}
         <br><b class="font-bold">{{movie.director.name}}</b>
         <br>{{movie.releaseDate|date('Y')}}</p>

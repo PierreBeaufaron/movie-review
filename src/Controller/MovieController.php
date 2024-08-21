@@ -27,7 +27,8 @@ class MovieController extends AbstractController
     {
         return $this->render('movie/item.html.twig', [
             'active_menu' => 'movies_list',
-            'movie' => $movie
+            'page_title' => $movie->getTitle(),
+            'movie' => $movie,
         ]);
     }
 
