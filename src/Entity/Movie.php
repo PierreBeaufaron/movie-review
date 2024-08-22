@@ -45,7 +45,6 @@ class Movie
     private ?string $synopsis = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url] 
     private ?string $imgSrc = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]

@@ -21,25 +21,36 @@ class MovieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title', TextType::class)
+            ->add('title', TextType::class, [
+                'label' => 'Titre',
+                'required' => true,
+            ])
             ->add('releaseDate', DateType::class, [
                 'widget' => 'single_text',  // Utilisation d'un input avec un calendrier
                 'html5' => true,            // Active l'input de type date natif en HTML5
                 'attr' => [
                     'class' => 'js-datepicker',  // Classe CSS pour personnalisation si nécessaire
                 ],
-                'format' => 'dd-MM-yyyy',   // Format de la date
+                //'format' => 'dd-MM-yyyy',   // Format de la date
+                'label' => 'Date de sortie',
+                'required' => true,
             ])
-            ->add('duration', NumberType::class)
+            ->add('duration', NumberType::class, [
+                'label' => 'Durée en minutes',
+                'required' => true,
+            ])
             ->add('synopsis', TextareaType::class)
-            ->add('imgSrc', UrlType::class)
+            ->add('imgSrc', UrlType::class, [
+                'label' => 'Illustration'
+            ])
             ->add('genre', EntityType::class, [
                 'class' => Genre::class,
                 'choice_label' => 'name',
             ])
             ->add('director', TextType::class, [
-                'label' => 'Director Name',
+                'label' => 'Réalisateur',
                 'required' => true,
+                'mapped' => false,
             ])
             ->add("Ajouter", SubmitType::class)
         ;

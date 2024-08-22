@@ -17,7 +17,8 @@ class MovieController extends AbstractController
     #[Route('/movies', name: 'movies_list')]
     public function list(MovieRepository $movieRepository): Response
     {
-        $movies = $movieRepository->findAll();
+        $movies = $movieRepository->findAll(); // Renvoie un tableau d'objet Movie et le stocke dans la variable movies
+        $movies = array_reverse($movies); // Inverser l'ordre du tableau pour afficher en premier les derniers ajoutés
         return $this->render('movie/list.html.twig', [
             'active_menu' => 'movies_list',
             'page_title' => 'Liste des films',
@@ -35,7 +36,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('movie/add',  name: "add_movie", methods: ["GET", "POST"])]
+    #[Route('movies/add',  name: "movie_add", methods: ["GET", "POST"])]
     public function add(
         Request $request,
         EntityManagerInterface $em
@@ -67,7 +68,7 @@ class MovieController extends AbstractController
             $em->persist($movie);
             $em->flush();
 
-            return $this->redirectToRoute('movie_add_success');
+            return $this->redirectToRoute('movie_add_success', ['movie_name' => $movie->getTitle()]);
         }
 
         return $this->render('movie/movie_add.html.twig', [
@@ -78,12 +79,15 @@ class MovieController extends AbstractController
 
     }
 
-    #[Route('/movie/addsuccess', name: "movie_add_success")]
-    public function newsletterConfirm(): Response
+    #[Route('/movies/addsuccess', name: "movie_add_success")]
+    public function movieAddSuccess(Request $request): Response
     {
-        return $this->render('index/movie_add_success.html.twig', [
+        $movieName = $request->query->get('movie_name');
+
+        return $this->render('movie/movie_add_success.html.twig', [
             'active_menu' => 'movie_list',
-            'page_title' => 'Félicitations !' 
+            'page_title' => 'Félicitations !',
+            'movie_name' => $movieName,
         ]);
     }
 
