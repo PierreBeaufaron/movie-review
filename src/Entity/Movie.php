@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MovieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 class Movie
@@ -15,18 +16,36 @@ class Movie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Length(
+        min: 1,
+        max: 255,
+        minMessage: 'Le titre du film doit être d\'au moins {{ limit }} caractère.',
+        maxMessage: 'Le titre du film ne doit pas excéder {{ limit }} caractères.',
+    )]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $releaseDate = null;
 
     #[ORM\Column]
+    #[Assert\Range(
+        min: 30,
+        max: 360,
+        notInRangeMessage: 'Vous devez entrer une durée entre {{ min }} et {{ max }} minutes',
+    )]
     private ?int $duration = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\Length(
+        min: 150,
+        max: 3500,
+        minMessage: 'Le résumé du film doit être d\'au moins {{ limit }} caractère.',
+        maxMessage: 'Le résumé du film ne doit pas excéder {{ limit }} caractères.',
+    )]
     private ?string $synopsis = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url] 
     private ?string $imgSrc = null;
 
     #[ORM\ManyToOne(inversedBy: 'movies')]
