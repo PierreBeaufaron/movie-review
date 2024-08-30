@@ -6,7 +6,34 @@ module.exports = {
     "./templates/**/*.html.twig",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'body': [
+          'Roboto', 
+          'ui-sans-serif', 
+          'system-ui',
+          // other fallback fonts
+        ],
+        'sans': [
+          'Roboto', 
+          'ui-sans-serif', 
+          'system-ui',
+          // other fallback fonts
+        ]
+      },
+      colors: {
+        transparent: 'transparent',
+        black: '#1a202c',
+        white: '#fff',
+        gray: {
+          100: '#f7fafc',
+          // ...
+          900: '#1a202c',
+        },
+  
+        // ...
+      }
+    },
   },
   plugins: [],
 }
