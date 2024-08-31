@@ -9,13 +9,13 @@ module.exports = {
     extend: {
       fontFamily: {
         'body': [
-          'Roboto', 
+          'Montserrat', 
           'ui-sans-serif', 
           'system-ui',
           // other fallback fonts
         ],
         'sans': [
-          'Roboto', 
+          'Montserrat', 
           'ui-sans-serif', 
           'system-ui',
           // other fallback fonts

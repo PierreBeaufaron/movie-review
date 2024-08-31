@@ -8,6 +8,7 @@ use App\Form\MovieType;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,15 +16,50 @@ use Symfony\Component\Routing\Attribute\Route;
 class MovieController extends AbstractController
 {
     #[Route('/movies', name: 'movies_list')]
-    public function list(MovieRepository $movieRepository): Response
-    {
-        $movies = $movieRepository->findAll(); // Renvoie un tableau d'objet Movie et le stocke dans la variable movies
-        $movies = array_reverse($movies); // Inverser l'ordre du tableau pour afficher en premier les derniers ajoutés
+    public function list(MovieRepository $movieRepository, Request $request): Response
+    {       
+        $query = $request->query->get('q');
+
+        if ($query) { // Champs de recherche si on arrive par là
+            $movies = $movieRepository->createQueryBuilder('m')
+                ->where('m.title LIKE :query')
+                ->setParameter('query', '%' . $query . '%')
+                ->orderBy('m.id','DESC')
+                ->getQuery()
+                ->getResult();
+        } else {
+            $movies = $movieRepository->findBy([], ['id' => 'DESC']);
+        }
+
         return $this->render('movie/list.html.twig', [
             'active_menu' => 'movies_list',
             'page_title' => 'Liste des films',
             'movies' => $movies,
+            'query' => $query,
         ]);
+    }
+
+    // Autocompletion du champ de recherche
+    #[Route('/movies/autocomplete', name: 'movie_autocomplete', methods: ['GET'])]
+    public function autocomplete(Request $request, MovieRepository $movieRepository): JsonResponse
+    {
+        $query = $request->query->get('q', '');
+        
+        $titles = $movieRepository->createQueryBuilder('m')
+            ->select('m.title')
+            ->where('m.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('m.title', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        // Extraire les titres du tableau de resultat
+        $titleList = array_map(function($movie) {
+            return $movie['title'];
+        }, $titles);
+
+        return new JsonResponse($titleList);
     }
 
     #[Route('/movie/{id}', name: "movie_item")]
