@@ -21,12 +21,7 @@ class MovieController extends AbstractController
         $query = $request->query->get('q');
 
         if ($query) { // Champs de recherche si on arrive par là
-            $movies = $movieRepository->createQueryBuilder('m')
-                ->where('m.title LIKE :query')
-                ->setParameter('query', '%' . $query . '%')
-                ->orderBy('m.id','DESC')
-                ->getQuery()
-                ->getResult();
+            $movies = $movieRepository->findByExampleField($query);
         } else {
             $movies = $movieRepository->findBy([], ['id' => 'DESC']);
         }
