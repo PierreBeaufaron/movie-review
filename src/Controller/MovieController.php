@@ -108,7 +108,7 @@ class MovieController extends AbstractController
                 $em->persist($director);
             }
 
-            // Associer l'objet réaliasteur au film
+            // Associer l'objet réalisateur au film
             $movie->setDirector($director);
 
             // Si tout va bien, alors on peut persister l'entité et valider les modifications en BDD
