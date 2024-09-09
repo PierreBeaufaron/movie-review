@@ -10,7 +10,7 @@
         {% for movie in movies %}
             {% include 'movie/movie_card.html.twig' with {'movie': movie} %}
         {% else %}
-            <p>Aucun article n'a été trouvé pour cette catégorie</p>
+            <p>Aucun film n'a été trouvé pour cette catégorie</p>
         {% endfor %}
     </div>
 {% endblock %}

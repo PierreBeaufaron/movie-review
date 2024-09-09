@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Actor;
 use App\Entity\Director;
 use App\Entity\Movie;
 use App\Form\MovieType;
@@ -18,19 +19,22 @@ class MovieController extends AbstractController
     #[Route('/movies', name: 'movies_list')]
     public function list(MovieRepository $movieRepository, Request $request): Response
     {       
-        $query = $request->query->get('q');
+        $title = $request->query->get('title');
+        $genre = $request->query->get('genre');
 
-        if ($query) { // Champs de recherche si on arrive par là
-            $movies = $movieRepository->findByExampleField($query);
+        if (!empty($title) && !empty($genre) && $genre == 'none') { // Champs de recherche si on arrive par là
+            $movies = $movieRepository->findByExampleField($title);
+        } elseif (!empty($title) && !empty($genre) && $genre !== 'none') {
+            $movies = $movieRepository->findBySomeField($title, $genre);
         } else {
             $movies = $movieRepository->findBy([], ['id' => 'DESC']);
         }
 
         return $this->render('movie/list.html.twig', [
             'active_menu' => 'movies_list',
-            'page_title' => 'Liste des films',
+            'page_title' => 'Tous les films',
             'movies' => $movies,
-            'query' => $query,
+            'query' => $title,
         ]);
     }
 
@@ -64,6 +68,18 @@ class MovieController extends AbstractController
             'active_menu' => 'movies_list',
             'page_title' => $movie->getTitle(),
             'movie' => $movie,
+        ]);
+    }
+
+    #[Route('/actor/{id}', name: 'movie_by_actor')]
+    public function byActor(Actor $actor, MovieRepository $movieRepository): Response
+    {
+        $movies = $movieRepository->findByActor($actor);
+
+        return $this->render('movie/list.html.twig', [
+            'active_menu' => 'movie_list',
+            'page_title' => "Films avec " . $actor->getName(),
+            'movies' => $movies
         ]);
     }
 

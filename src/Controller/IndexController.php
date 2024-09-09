@@ -25,23 +25,6 @@ class IndexController extends AbstractController
         ]);
     }
 
-    #[Route('/about', name: 'about')]
-    public function about(): Response
-    {
-        return $this->render('index/about.html.twig', [
-            'active_menu' => 'about',
-            'page_title' => 'Qui sommes-nous ?',
-        ]);
-    }
-
-    #[Route('/contact', name: 'contact')]
-    public function contact(): Response
-    {
-        return $this->render('index/contact.html.twig', [
-            'active_menu' => 'contact',
-            'page_title' => 'Nous contacter...',
-        ]);
-    }
 
     #[Route('/newsletter/subscribe', name: "newsletter_subscribe", methods: ["GET", "POST"])]
     public function newsletterSubscribe(

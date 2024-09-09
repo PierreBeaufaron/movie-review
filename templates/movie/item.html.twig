@@ -21,6 +21,11 @@
                 <p class="">Genre : <strong class="font-semibold">{{movie.genre.name}}</strong></p>
                 <p class="">Date de sortie <strong class="font-semibold">{{movie.releaseDate|date('d-m-Y')}}</strong></p>
                 <p class="">Durée : <strong class="font-semibold">{{movie.duration}} minutes</strong></p>
+                <p class="">Acteurs : 
+                    {% for actor in movie.actors %}
+                        <a href="{{ path('movie_by_actor', { id: actor.id }) }}"><strong class="font-semibold">{{actor.name}}</strong>{% if not loop.last %}, {% else %}.{% endif %} </a>
+                    {% endfor %}
+                </p>
             </div>
         </div>
     </div>

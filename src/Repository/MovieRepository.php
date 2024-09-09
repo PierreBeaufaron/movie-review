@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Actor;
 use App\Entity\Movie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,13 +31,26 @@ class MovieRepository extends ServiceEntityRepository
             ;
        }
 
-    //    public function findOneBySomeField($value): ?Movie
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+       public function findBySomeField($title, $genre): array
+       {
+            return $this->createQueryBuilder('m')
+               ->andWhere('m.title LIKE :title')
+               ->andWhere('m.genre = :genre')
+               ->setParameter('title', '%' . $title . '%')
+               ->setParameter('genre', $genre)
+               ->getQuery()
+               ->getResult()
+           ;
+       }
+
+       public function findByActor(Actor $actor)
+        {
+            return $this->createQueryBuilder('m')
+                ->innerJoin('m.actors', 'a')  // 'actors' est le nom de la relation dans Movie
+                ->where('a = :actor')
+                ->setParameter('actor', $actor)
+                ->orderBy('m.id', 'DESC')
+                ->getQuery()
+                ->getResult();
+        }
 }
