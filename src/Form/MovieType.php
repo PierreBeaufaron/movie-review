@@ -6,7 +6,6 @@ use App\Entity\Genre;
 use App\Entity\Movie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -78,7 +77,7 @@ class MovieType extends AbstractType
                 'required' => false,
                 'mapped' => false,
             ])
-            ->add("Ajouter", SubmitType::class)
+            ->add("Sauvegarder", SubmitType::class)
         ;
     }
 

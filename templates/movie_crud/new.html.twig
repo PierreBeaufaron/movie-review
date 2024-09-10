@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{page_title}}{% endblock %}
+
+{% block body %}
+
+    {{ include('movie_crud/_form.html.twig') }}
+
+    <a href="{{ path('app_movie_crud_index') }}" class="text-blue-700 font-semibold">Revenir à la liste des films</a>
+{% endblock %}
