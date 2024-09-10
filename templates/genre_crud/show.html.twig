@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{page_title}}{% endblock %}
+
+{% block body %}
+
+    <div class="w-full relative overflow-x-auto sm:rounded-lg mb-6">
+        <table class="w-full md:w-1/3 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
+                        Identifiant
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                        {{ genre.id }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="col" class="px-6 py-4 text-xs uppercase text-gray-700 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                        Nom
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ genre.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2">
+                        <a href="{{ path('app_genre_crud_edit', {'id': genre.id}) }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 mb-28">Modifier</a>
+                    </td>
+                    <td class="py-2">
+                        {{ include('genre_crud/_delete_form.html.twig') }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <a href="{{ path('app_genre_crud_index') }}" class="text-blue-700 font-semibold">Revenir à la liste des catégories</a>
+    </div>
+
+
+{% endblock %}

@@ -2,18 +2,17 @@
 
 namespace App\Form;
 
-use App\Entity\Director;
 use App\Entity\Genre;
 use App\Entity\Movie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
@@ -57,6 +56,26 @@ class MovieType extends AbstractType
             ->add('director', TextType::class, [
                 'label' => 'Réalisateur',
                 'required' => true,
+                'mapped' => false,
+            ])
+            ->add('actor1', TextType::class, [
+                'label' => 'Acteur 1',
+                'required' => false,
+                'mapped' => false,
+            ])
+            ->add('actor2', TextType::class, [
+                'label' => 'Acteur 2',
+                'required' => false,
+                'mapped' => false,
+            ])
+            ->add('actor3', TextType::class, [
+                'label' => 'Acteur 3',
+                'required' => false,
+                'mapped' => false,
+            ])
+            ->add('actor4', TextType::class, [
+                'label' => 'Acteur 4',
+                'required' => false,
                 'mapped' => false,
             ])
             ->add("Ajouter", SubmitType::class)

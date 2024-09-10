@@ -34,14 +34,14 @@ class AppFixtures extends Fixture
         'Susan Sarandon'
     ];
     private const IMG_LINK = [
-        'https://atalante-cinema.org/wp-content/uploads/2022/09/pierrot-le-fou-1.jpeg',
-        'https://www.francetvinfo.fr/pictures/KleiMledusfgJdwJJsgGTN6QCAI/1200x675/2019/08/16/phpdEKrWP.jpg',
-        'https://leregardlibre.com/wp-content/uploads/2020/05/Scarface-5-%C2%A9-Universal-Pictures.jpg',
-        'https://media.gqmagazine.fr/photos/60dddd067498dd8ce617b911/master/pass/killbill.jpg',
-        'https://bullesdeculture.com/bdc-content/uploads/2020/06/le-seigneur-des-anneaux-le-retour-du-roi-de-peter-jackson.jpg',
-        'https://i.f1g.fr/media/eidos/orig/2023/07/31/XVMfc3e47b6-2eee-11ee-8876-e7eed8ec0437.jpg',
-        'https://www.rayonvertcinema.org/wp-content/uploads/2023/10/Taxi-Driver-Martin-Scorsese.jpg',
-        'https://www.radiofrance.fr/s3/cruiser-production/2023/07/647ee1e6-d9aa-456c-ae6f-8a4b242acf1c/1200x680_sc_rocky-horror-picture-show.jpg'
+        'pierrot-le-fou-1.jpeg',
+        'phpdEKrWP.jpg',
+        'Scarface.jpg',
+        'killbill.webp',
+        'le-seigneur-des-anneaux-le-retour-du-roi-de-peter-jackson.jpg',
+        'leparrain.webp',
+        'TaxiDriver.webp',
+        'rocky-horror-picture-show.jpg'
     ];
 
     public function load(ObjectManager $manager): void

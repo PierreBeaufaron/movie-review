@@ -17,7 +17,7 @@ class GenreController extends AbstractController
     {
         $movies = $movieRepository->findBy(['genre' => $genre], ['id' => 'DESC']);
 
-        return $this->render('genre/item.html.twig', [
+        return $this->render('movie/list.html.twig', [
             'active_menu' => 'movie_list',
             'page_title' => $genre->getName(),
             'genre' => $genre,

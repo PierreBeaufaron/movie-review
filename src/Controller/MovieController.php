@@ -6,16 +6,23 @@ use App\Entity\Actor;
 use App\Entity\Director;
 use App\Entity\Movie;
 use App\Form\MovieType;
+use App\Repository\ActorRepository;
+use App\Repository\DirectorRepository;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class MovieController extends AbstractController
 {
+
     #[Route('/movies', name: 'movies_list')]
     public function list(MovieRepository $movieRepository, Request $request): Response
     {       
@@ -86,7 +93,10 @@ class MovieController extends AbstractController
     #[Route('movies/add',  name: "movie_add", methods: ["GET", "POST"])]
     public function add(
         Request $request,
-        EntityManagerInterface $em
+        DirectorRepository $directorRepository,
+        ActorRepository $actorRepository,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
         ): Response
     {
 
@@ -99,7 +109,7 @@ class MovieController extends AbstractController
             // ICI GÉRER L'AJOUT DU RÉAL !!!
             $directorName = $form->get('director')->getData(); // Récupération du contenu du champs 'director'
             // On le test en faisant un findOneBy dans la BDD
-            $director = $em->getRepository(Director::class)->findOneBy(['name' => $directorName]);
+            $director = $directorRepository->findOneBy(['name' => $directorName]);
 
             // Si le réalisateur n'existe pas, on le crée
             if (!$director) {
@@ -110,6 +120,62 @@ class MovieController extends AbstractController
 
             // Associer l'objet réalisateur au film
             $movie->setDirector($director);
+
+            // GÉRER L'UPLOAD DE FICHIER
+            /** @var UploadedFile $imgSrcUrl */
+            $imgSrcUrl = $form->get('imgSrcUrl')->getData();
+
+            if ($imgSrcUrl) { // Si une image est présente, alors on déclenche l'upload
+                // On récupère le nom original du fichier, tel que nommé par le client
+                $originalFilename = pathinfo($imgSrcUrl->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                // On peut alors construire le nom du fichier tel qu'il sera stocké sur le serveur
+                $filename = $safeFilename . '-' . uniqid() . '.' . $imgSrcUrl->guessExtension();
+
+                try {
+                    // À la manière de move_uploaded_file en PHP, on tente ici de déplacer le fichier
+                    // de sa zone de transit à sa destination
+                    // Cette méthode peut lancer des exceptions : on encadre donc l'appel par un bloc
+                    // try...catch
+                    $imgSrcUrl->move(
+                        'uploads/movie/',
+                        $filename
+                    );
+                    // Si on n'est pas passé dans le catch, alors on peut enregistrer le nom du fichier
+                    // dans la propriété profilePicFilename de l'utilisateur
+                    $movie->setImgSrc($filename);
+                } catch (FileException $e) {
+                    $form->addError(new FormError("Erreur lors de l'upload du fichier"));
+                }
+            }
+
+            $actorNames = [
+                $form->get('actor1')->getData(),
+                $form->get('actor2')->getData(),
+                $form->get('actor3')->getData(),
+                $form->get('actor4')->getData(),
+            ];
+
+            foreach ($actorNames as $actorName) {
+                $actorName = trim($actorName);
+                if ($actorName === '') {
+                    continue;
+                }
+
+                // Vérifier si l'acteur existe déjà
+                $actor = $actorRepository->findOneBy(['name' => $actorName]);
+
+                if (!$actor) {
+                    // Créer un nouvel acteur s'il n'existe pas
+                    $actor = new Actor();
+                    $actor->setName($actorName);
+                    $em->persist($actor);
+                }
+
+                // Ajouter l'acteur au film
+                $movie->addActor($actor);
+
+            }
 
             // Si tout va bien, alors on peut persister l'entité et valider les modifications en BDD
             $em->persist($movie);
