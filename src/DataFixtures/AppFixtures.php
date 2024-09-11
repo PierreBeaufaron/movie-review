@@ -37,7 +37,12 @@ class AppFixtures extends Fixture
         'Tim Curry',
         'Jodie Foster',
         'Christofer Lee',
-        'Susan Sarandon'
+        'Susan Sarandon',
+        'Daniel Day_Lewis',
+        'Anouk Aimée',
+        'Jean-Paul Belmondo',
+        'Anna Karina',
+        'Brigite Bardot'
     ];
     private const IMG_LINK = [
         'pierrot-le-fou-1.jpeg',
@@ -47,7 +52,19 @@ class AppFixtures extends Fixture
         'le-seigneur-des-anneaux-le-retour-du-roi-de-peter-jackson.jpg',
         'leparrain.webp',
         'TaxiDriver.webp',
-        'rocky-horror-picture-show.jpg'
+        'rocky-horror-picture-show.jpg',
+        'sincity.webp',
+        'lotr.jpg',
+        'orange.webp',
+        'diehard.jpg',
+        'pulpfiction.jpg',
+        'blowup.jpg',
+        'twbb.jpg',
+        'uheuf.webp',
+        'tgtbtu.jpg',
+        'serpico',
+        'seven.webp',
+        'inthemood.webp'
     ];
 
     public function load(ObjectManager $manager): void
