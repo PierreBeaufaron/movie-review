@@ -6,12 +6,18 @@ use App\Entity\Actor;
 use App\Entity\Director;
 use App\Entity\Genre;
 use App\Entity\Movie;
+use App\Entity\User;
 use Faker\Factory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
+    public function __construct(private UserPasswordHasherInterface $hasher)
+  {
+  }
 
     private const NBR_MOVIES = 200;
     private const NBR_DIRECTORS = 50;
@@ -51,6 +57,7 @@ class AppFixtures extends Fixture
         $actors = [];
         $directors = [];
 
+        // --- GENRES ---------------------------------------------------
         foreach (self::GENRES_NAMES as $genreName) {
             $genre = new Genre();
             $genre->setName($genreName);
@@ -59,6 +66,7 @@ class AppFixtures extends Fixture
             $genres[] = $genre;
         }
 
+        // --- ACTORS ---------------------------------------------------
         foreach (self::ACTORS_NAMES as $actorName) {
             $actor = new Actor();
             $actor->setName($actorName);
@@ -67,6 +75,7 @@ class AppFixtures extends Fixture
             $actors[] = $actor;
         }
 
+        // --- DEATH DATE ---------------------------------------------------
         function generateDeathDate($faker) {
             // Génère un nombre aléatoire entre 0 et 1
             $random = $faker->randomFloat(2, 0, 1);
@@ -80,7 +89,7 @@ class AppFixtures extends Fixture
             }
         }
 
-
+        // --- DIRECTORS ---------------------------------------------------
         for ($i = 0; $i < self::NBR_DIRECTORS; $i++) {
             $director = new Director();
             $director
@@ -92,6 +101,7 @@ class AppFixtures extends Fixture
             $directors[] = $director;
         }
 
+        // --- MOVIES ---------------------------------------------------
         for ($i = 0; $i < self::NBR_MOVIES; $i++) {
             $movie = new Movie();
             $movie
@@ -111,6 +121,26 @@ class AppFixtures extends Fixture
 
             $manager->persist($movie); // Mise en mémoire de $article dans manager à chaque tour
         }
+
+        // --- USERS ---------------------------------------------------
+        $admin = new User();
+        $admin
+            ->setEmail("admin@sf-news.com")
+            ->setRoles(["ROLE_ADMIN"])
+            ->setPassword($this->hasher->hashPassword($admin, "admin1234"))
+            ->setUsername("Jésus Christ");
+
+        $manager->persist($admin);
+
+        $user = new User();
+        $user
+            ->setEmail("user@test.com")
+            ->setRoles(["ROLE_USER"])
+            ->setPassword($this->hasher->hashPassword($user, "test4567"))
+            ->setUsername("Ponce Pilate");
+
+        $manager->persist($user);
+
 
         $manager->flush(); // pousse tout le contenu de $manager dans le BDD
 

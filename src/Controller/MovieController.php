@@ -46,7 +46,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/crud', name: 'movie_crud_index', methods: ['GET'])]
+    #[Route('/admin', name: 'movie_crud_index', methods: ['GET'])]
     public function index(MovieRepository $movieRepository): Response
     {
         return $this->render('movie_crud/index.html.twig', [
@@ -56,7 +56,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'movie_crud_new', methods: ['GET', 'POST'])]
+    #[Route('/admin/new', name: 'movie_crud_new', methods: ['GET', 'POST'])]
     public function add(
         Request $request,
         DirectorRepository $directorRepository,
@@ -158,7 +158,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'movie_crud_edit', methods: ['GET', 'POST'])]
+    #[Route('/admin/{id}/edit', name: 'movie_crud_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         Movie $movie,
@@ -235,7 +235,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'movie_crud_delete', methods: ['POST'])]
+    #[Route('/admin/{id}', name: 'movie_crud_delete', methods: ['POST'])]
     public function delete(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->getPayload()->getString('_token'))) {
@@ -243,7 +243,7 @@ class MovieController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_movie_crud_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('movie_crud_index', [], Response::HTTP_SEE_OTHER);
     }
 
     // Autocompletion du champ de recherche
