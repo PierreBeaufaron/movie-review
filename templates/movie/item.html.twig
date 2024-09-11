@@ -26,6 +26,9 @@
                         <a href="{{ path('movie_by_actor', { id: actor.id }) }}"><strong class="font-semibold">{{actor.name}}</strong>{% if not loop.last %}, {% else %}.{% endif %} </a>
                     {% endfor %}
                 </p>
+                <p class="text-right mt-6">
+                    <a href="{{ path('movie_crud_edit', {'id': movie.id}) }}" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Modifier</a>
+                </p>
             </div>
         </div>
     </div>

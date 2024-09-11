@@ -26,43 +26,4 @@ class IndexController extends AbstractController
     }
 
 
-    #[Route('/newsletter/subscribe', name: "newsletter_subscribe", methods: ["GET", "POST"])]
-    public function newsletterSubscribe(
-        Request $request,
-        EntityManagerInterface $em
-        ): Response 
-    {
-
-        $newsletter = new NewsletterMail();
-        $form = $this->createForm(NewsletterMailType::class, $newsletter);
-
-        // Prend en charge la requête entrante
-        // et s'il y a des données, les met dans $newsletter
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Si tout va bien, alors on peut persister l'entité et valider les modifications en BDD
-            $em->persist($newsletter);
-            $em->flush();
-
-            return $this->redirectToRoute('newsletter_confirm');
-        }
-
-        return $this->render('index/newsletter.html.twig', [
-            'active_menu' => 'contact',
-            'page_title' => 'Newsletter',
-            'newsletter_form' => $form->createView(),
-        ]);
-
-    }
-
-    #[Route('/newsletter/thanks', name: "newsletter_confirm")]
-    public function newsletterConfirm(): Response
-    {
-        return $this->render('index/newsletter_confirm.html.twig', [
-            'active_menu' => 'contact',
-            'page_title' => 'Merci' 
-        ]);
-    }
-
 }

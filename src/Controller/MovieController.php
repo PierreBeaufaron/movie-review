@@ -20,10 +20,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+#[Route('/movie')]
 class MovieController extends AbstractController
 {
 
-    #[Route('/movies', name: 'movies_list')]
+    #[Route('/', name: 'movies_list')]
     public function list(MovieRepository $movieRepository, Request $request): Response
     {       
         $title = $request->query->get('title');
@@ -45,52 +46,17 @@ class MovieController extends AbstractController
         ]);
     }
 
-    // Autocompletion du champ de recherche
-    #[Route('/movies/autocomplete', name: 'movie_autocomplete', methods: ['GET'])]
-    public function autocomplete(Request $request, MovieRepository $movieRepository): JsonResponse
+    #[Route('/crud', name: 'movie_crud_index', methods: ['GET'])]
+    public function index(MovieRepository $movieRepository): Response
     {
-        $query = $request->query->get('q', '');
-        
-        $titles = $movieRepository->createQueryBuilder('m')
-            ->select('m.title')
-            ->where('m.title LIKE :query')
-            ->setParameter('query', '%' . $query . '%')
-            ->orderBy('m.title', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-
-        // Extraire les titres du tableau de resultat
-        $titleList = array_map(function($movie) {
-            return $movie['title'];
-        }, $titles);
-
-        return new JsonResponse($titleList);
-    }
-
-    #[Route('/movie/{id}', name: "movie_item")]
-    public function item(Movie $movie): Response
-    {
-        return $this->render('movie/item.html.twig', [
+        return $this->render('movie_crud/index.html.twig', [
+            'movies' => $movieRepository->findAll(),
             'active_menu' => 'movies_list',
-            'page_title' => $movie->getTitle(),
-            'movie' => $movie,
+            'page_title' => 'Éditer les films'
         ]);
     }
 
-    #[Route('/actor/{id}', name: 'movie_by_actor')]
-    public function byActor(Actor $actor, MovieRepository $movieRepository): Response
-    {
-        $movies = $movieRepository->findByActor($actor);
-
-        return $this->render('movie/list.html.twig', [
-            'active_menu' => 'movie_list',
-            'page_title' => "Films avec " . $actor->getName(),
-            'movies' => $movies
-        ]);
-    }
-
-    #[Route('movies/add',  name: "movie_add", methods: ["GET", "POST"])]
+    #[Route('/new', name: 'movie_crud_new', methods: ['GET', 'POST'])]
     public function add(
         Request $request,
         DirectorRepository $directorRepository,
@@ -184,15 +150,137 @@ class MovieController extends AbstractController
             return $this->redirectToRoute('movie_add_success', ['movie_name' => $movie->getTitle()]);
         }
 
-        return $this->render('movie/movie_add.html.twig', [
-            'active_menu' => 'movie',
-            'page_title' => 'Ajouter un film',
-            'movie_add_form' => $form->createView(),
+        return $this->render('movie_crud/new.html.twig', [
+            'movie' => $movie,
+            'form' => $form,
+            'active_menu' => 'movies_list',
+            'page_title' => 'Ajouter un film'
         ]);
-
     }
 
-    #[Route('/movies/addsuccess', name: "movie_add_success")]
+    #[Route('/{id}/edit', name: 'movie_crud_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        Movie $movie,
+        EntityManagerInterface $entityManager,
+        DirectorRepository $directorRepository,
+        ActorRepository $actorRepository
+    ): Response
+    {
+        $form = $this->createForm(MovieType::class, $movie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Traitement du réalisateur
+            $directorName = $form->get('director')->getData();
+            $director = $directorRepository->findOneBy(['name' => $directorName]);
+            
+            if (!$director) {
+                $director = new Director();
+                $director->setName($directorName);
+                $entityManager->persist($director);
+            }
+            
+            $movie->setDirector($director);
+            
+            // Traitement des acteurs
+            $actorNames = [
+                $form->get('actor1')->getData(),
+                $form->get('actor2')->getData(),
+                $form->get('actor3')->getData(),
+                $form->get('actor4')->getData(),
+            ];
+
+            // Supprimer les anciens acteurs
+            foreach ($movie->getActors() as $existingActor) {
+                $movie->removeActor($existingActor);
+            }
+
+            foreach ($actorNames as $actorName) {
+                $actorName = trim($actorName);
+                if ($actorName === '') {
+                    continue;
+                }
+
+                $actor = $actorRepository->findOneBy(['name' => $actorName]);
+
+                if (!$actor) {
+                    $actor = new Actor();
+                    $actor->setName($actorName);
+                    $entityManager->persist($actor);
+                }
+                
+                $movie->addActor($actor);
+            }
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('movie_crud_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // Pré-remplir les champs avec les données existantes
+        $form->get('director')->setData($movie->getDirector() ? $movie->getDirector()->getName() : '');
+
+        $actors = $movie->getActors();
+        $actorFields = ['actor1', 'actor2', 'actor3', 'actor4'];
+        foreach ($actorFields as $index => $actorField) {
+            $form->get($actorField)->setData(isset($actors[$index]) ? $actors[$index]->getName() : '');
+        }
+
+        return $this->render('movie_crud/edit.html.twig', [
+            'movie' => $movie,
+            'form' => $form->createView(),
+            'active_menu' => 'movies_list',
+            'page_title' => 'Modifier ' . $movie->getTitle()
+        ]);
+    }
+
+    #[Route('/{id}', name: 'movie_crud_delete', methods: ['POST'])]
+    public function delete(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$movie->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($movie);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_movie_crud_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    // Autocompletion du champ de recherche
+    #[Route('/autocomplete', name: 'movie_autocomplete', methods: ['GET'])]
+    public function autocomplete(Request $request, MovieRepository $movieRepository): JsonResponse
+    {
+        $query = $request->query->get('q', '');
+        
+        $titles = $movieRepository->createQueryBuilder('m')
+            ->select('m.title')
+            ->where('m.title LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('m.title', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        // Extraire les titres du tableau de resultat
+        $titleList = array_map(function($movie) {
+            return $movie['title'];
+        }, $titles);
+
+        return new JsonResponse($titleList);
+    }
+
+    #[Route('/{id}', name: "movie_item")]
+    public function item(Movie $movie): Response
+    {
+        return $this->render('movie/item.html.twig', [
+            'active_menu' => 'movies_list',
+            'page_title' => $movie->getTitle(),
+            'movie' => $movie,
+        ]);
+    }
+
+
+    #[Route('/crud/success', name: "movie_add_success")]
     public function movieAddSuccess(Request $request): Response
     {
         $movieName = $request->query->get('movie_name');

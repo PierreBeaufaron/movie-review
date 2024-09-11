@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('app_movie_crud_delete', {'id': movie.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+<form method="post" action="{{ path('movie_crud_delete', {'id': movie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir effacer ce film ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
-    <button class="btn">Delete</button>
+    <button class="text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Effacer</button>
 </form>
